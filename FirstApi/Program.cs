@@ -1,13 +1,18 @@
 using FirstApi.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
+//using System.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<BooksDb>(opt => opt.UseInMemoryDatabase("BookList"));// Configuracion del contexto de la bd para usar una bd en memoria
 
+var ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddSingleton<IDbConnection>((sp) => new SqlConnection(ConnectionString));
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
